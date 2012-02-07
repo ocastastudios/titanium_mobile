@@ -12,3 +12,5 @@ xcuserdata
 *.BASE.*
 *.LOCAL.*
 *.REMOTE.*
+
+android-sdk

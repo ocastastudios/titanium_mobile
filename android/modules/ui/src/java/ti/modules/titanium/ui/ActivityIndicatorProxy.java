@@ -17,7 +17,7 @@ import android.app.Activity;
 @Kroll.proxy(creatableInModule=UIModule.class, propertyAccessors = {
 	"message", "value",
 	"location", "min", "max",
-	"messageid", "type", "cancelable"
+	"messageid", "type"
 })
 @Kroll.dynamicApis(methods = {
 	"hide", "show"

@@ -233,6 +233,11 @@ exports.bootstrapWindow = function(Titanium) {
 		} else {
 			this.window = this.getActivityDecorView();
 			this.view = new UI.View(this._properties);
+			
+
+			// Add children before the view is added
+			this.addChildren();
+			
 			this.window.add(this.view);
 		}
 
@@ -243,11 +248,11 @@ exports.bootstrapWindow = function(Titanium) {
 		}
 
 		this.setWindowView(this.view);
-		this.addChildren();
 
 		if (needsOpen) {
 			this.window.on("windowCreated", function () {
 				self.postOpen();
+				self.addChildren();
 			});
 
 			this.window.open(options);

@@ -17,6 +17,9 @@ import org.appcelerator.titanium.view.TiUIView;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -48,6 +51,8 @@ public class TiUIActivityIndicator extends TiUIView
 	protected int min;
 	protected int max;
 	protected int type;
+    protected boolean cancelable;
+    
 
 	public TiUIActivityIndicator(TiViewProxy proxy) {
 		super(proxy);
@@ -151,6 +156,11 @@ public class TiUIActivityIndicator extends TiUIView
 		if (proxy.hasProperty("type")) {
 			type = TiConvert.toInt(proxy.getProperty("type"));
 		}
+        
+        cancelable = false;
+        if (proxy.hasProperty("cancelable")) {
+            cancelable = TiConvert.toBoolean(proxy.getProperty("cancelable"));
+        }
 
 		if (location == STATUS_BAR) {
 			incrementFactor = 10000 / (max - min);
@@ -181,7 +191,18 @@ public class TiUIActivityIndicator extends TiUIView
 			}
 
 			progressDialog.setMessage(message);
-			progressDialog.setCancelable(false);
+			progressDialog.setCancelable(cancelable);
+            
+            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dlg) {
+                    if(visible == false) {
+                        return;
+                    }
+                    visible = false;
+                    proxy.fireEvent("cancel", new KrollDict());
+                }
+            });
 
 			if (type == INDETERMINANT) {
 				progressDialog.setIndeterminate(true);
@@ -202,6 +223,7 @@ public class TiUIActivityIndicator extends TiUIView
 			Log.w(LCAT, "Unknown location: " + location);
 		}
 		visible = true;
+
 	}
 
 	public void hide(KrollDict options)
